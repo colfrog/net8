@@ -20,7 +20,7 @@
 
 class Server {
 public:
-    Server();
+    Server(int port);
     void run();
     void send_to_room(int game_id, std::string message);
     void send_to_one(int socket, std::string message);

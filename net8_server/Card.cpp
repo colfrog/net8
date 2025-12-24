@@ -3,3 +3,5 @@
 //
 
 #include "Card.h"
+
+Card::Card(Type t, Face f) : m_type(t), m_face(f) {}

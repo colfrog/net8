@@ -11,6 +11,7 @@ class Player {
 public:
     Player(int socket, int game_id);
 
+    void set_name(std::string name);
     void set_game_id(int game_id);
     int get_game_id();
 

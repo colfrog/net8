@@ -1,6 +1,6 @@
 #include "Server.h"
 
 int main() {
-    Server server;
+    Server server{8888};
     server.run();
 }

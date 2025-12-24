@@ -12,7 +12,7 @@
 
 #include "Server.h"
 
-Server::Server() {
+Server::Server(int port) {
     std::cout << "Creating socket..." << std::endl;
     m_server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (m_server_socket < 0)
@@ -20,7 +20,7 @@ Server::Server() {
 
     sockaddr_in addr = {};
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(11111);
+    addr.sin_port = htons(port);
     addr.sin_addr.s_addr = INADDR_ANY;
 
     std::cout << "Binding socket..." << std::endl;

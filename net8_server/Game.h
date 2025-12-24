@@ -16,6 +16,7 @@ class Game {
 public:
     Game(Server *server, std::string name);
 
+    void add_player(int socket);
     void remove_player(int socket);
 
 private:
