@@ -19,6 +19,7 @@ public:
         SEVEN,
         EIGHT,
         NINE,
+        TEN,
         JACK,
         QUEEN,
         KING,
