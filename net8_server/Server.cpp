@@ -94,7 +94,7 @@ void Server::run() {
         if (events_ready < 0)
             throw std::runtime_error("epoll error");
 #else
-        events_ready = kevent(m_kqueue_fd, &change_events[0], change_events.size(), events, m_max_events, &timeout);
+        events_ready = kevent(m_kqueue_fd, change_events.data(), change_events.size(), events, m_max_events, &timeout);
         if (events_ready < 0)
             throw std::runtime_error("kqueue error");
 #endif
@@ -113,6 +113,7 @@ void Server::run() {
 #endif
                 add_client(new_conn);
             } else {
+                std::cout << "Received event from client" << std::endl;
 #ifdef __linux__
                 if ((events[i].events&EPOLLIN) != 0) {
 #else
