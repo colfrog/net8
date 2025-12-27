@@ -44,7 +44,7 @@ Server::Server(int port) {
         throw std::runtime_error("Error adding epoll event for server");
 #else
     m_kqueue_fd = kqueue();
-    if (kqueue_fd < 0)
+    if (m_kqueue_fd < 0)
         throw std::runtime_error("Error creating kqueue");
 
     struct kevent ev = {};
@@ -89,11 +89,11 @@ void Server::run() {
     ssize_t num_chars = 0;
     while (true) {
 #ifdef __linux__
-        events_ready = epoll_wait(m_epoll_fd, events, m_max_events, 10);
+        events_ready = epoll_wait(m_epoll_fd, events, m_max_events, m_timeout);
         if (events_ready < 0)
             throw std::runtime_error("epoll error");
 #else
-        events_ready = kevent(m_kqueue_fd, &change_events[0], change_events.size(), events, m_max_events)
+        events_ready = kevent(m_kqueue_fd, &change_events[0], change_events.size(), events, m_max_events, &timeout);
         if (events_ready < 0)
             throw std::runtime_error("kqueue error");
 #endif
@@ -125,13 +125,17 @@ void Server::run() {
 #ifdef __linux__
                 if ((events[i].events&EPOLLHUP) != 0) {
 #else
-                if ((events[i].events&EV_EOF) != 0) {
+                if ((events[i].flags&EV_EOF) != 0) {
                     change_events.push_back(prepare_event_to_del(fd));
 #endif
                     remove_client(fd);
                 }
             }
         }
+
+#ifndef __linux__
+        change_events.clear();
+#endif
     }
 }
 
@@ -165,5 +169,6 @@ void Server::remove_client(int socket) {
 }
 
 void Server::receive_message(int socket, const std::string &message) {
+    std::cout << message << std::endl;
     write(socket, message.c_str(), message.size());
 }

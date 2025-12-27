@@ -35,7 +35,7 @@ private:
 #ifdef __linux__
     int m_epoll_fd;
 #else
-    int m_kqueue_fd
+    int m_kqueue_fd;
 #endif
     int m_max_events = 16;
     int m_timeout = 10; // ms
