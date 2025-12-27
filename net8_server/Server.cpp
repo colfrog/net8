@@ -107,7 +107,7 @@ void Server::run() {
             if (fd == m_server_socket) {
                 const int new_conn = accept(fd, nullptr, nullptr);
 #ifndef __linux__
-                change_events.push_back(prepare_event_to_add(fd));
+                change_events.push_back(prepare_event_to_add(new_conn));
 #endif
                 add_client(new_conn);
             } else {
