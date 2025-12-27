@@ -114,11 +114,11 @@ void Server::run() {
 #endif
                 add_client(new_conn);
             } else {
-                std::cout << "Received event from client " << events[i].filter << std::endl;
+                std::cout << "Received event from client" << std::endl;
 #ifdef __linux__
                 if ((events[i].events&EPOLLIN) != 0) {
 #else
-                if ((events[i].filter&EVFILT_READ) != 0) {
+                if (true) {
 #endif
                     std::cout << "Received message" << std::endl;
                     while ((num_chars = read(fd, buffer, sizeof(buffer))) > 0) {
