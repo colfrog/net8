@@ -114,7 +114,7 @@ void Server::run() {
 #endif
                 add_client(new_conn);
             } else {
-                std::cout << "Received event from client" << std::endl;
+                std::cout << "Received event from client " << events[i].filter << std::endl;
 #ifdef __linux__
                 if ((events[i].events&EPOLLIN) != 0) {
 #else
