@@ -7,8 +7,9 @@
 
 #ifdef __linux__
 #include <sys/epoll.h>
-#elif defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__APPLE__)
+#else
 #include <sys/event.h>
+#include <sys/time.h>
 #endif
 
 #include <list>
@@ -26,12 +27,18 @@ public:
     void send_to_one(int socket, std::string message);
 
 private:
-    void add_client(int socket) const;
+    void add_client(int socket);
     void remove_client(int socket);
     void receive_message(int socket, const std::string &message);
 
     int m_server_socket;
-    int epoll_fd;
+#ifdef __linux__
+    int m_epoll_fd;
+#else
+    int m_kqueue_fd
+#endif
+    int m_max_events = 16;
+    int m_timeout = 10; // ms
     std::list<int> m_client_sockets;
     std::vector<Game> m_rooms;
     std::map<int, Game*> m_room_of_client;
