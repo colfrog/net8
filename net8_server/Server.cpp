@@ -95,6 +95,7 @@ void Server::run() {
             throw std::runtime_error("epoll error");
 #else
         events_ready = kevent(m_kqueue_fd, change_events.data(), change_events.size(), events, m_max_events, &timeout);
+        change_events.clear();
         if (events_ready < 0)
             throw std::runtime_error("kqueue error");
 #endif
@@ -137,10 +138,6 @@ void Server::run() {
                 }
             }
         }
-
-#ifndef __linux__
-        change_events.clear();
-#endif
     }
 }
 
