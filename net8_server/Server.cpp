@@ -47,6 +47,7 @@ Server::Server(int port) {
     if (m_kqueue_fd < 0)
         throw std::runtime_error("Error creating kqueue");
 
+    std::cout << "Registering with kqueue..." << std::endl;
     struct kevent ev = {};
     ev.ident = m_server_socket;
     ev.flags = EV_ADD;
@@ -61,7 +62,7 @@ Server::Server(int port) {
 struct kevent prepare_event_to_add(int fd) {
     struct kevent ev = {};
     ev.ident = fd;
-    ev.flags = EV_ADD;
+    ev.flags = EV_ADD|EV_ENABLE;
     ev.filter = EVFILT_READ;
     return ev;
 }
@@ -69,7 +70,7 @@ struct kevent prepare_event_to_add(int fd) {
 struct kevent prepare_event_to_del(int fd) {
     struct kevent ev = {};
     ev.ident = fd;
-    ev.flags = EV_DELETE;
+    ev.flags = EV_DELETE|EV_DISABLE;
     return ev;
 }
 #endif
@@ -105,6 +106,7 @@ void Server::run() {
             fd = events[i].ident;
 #endif
             if (fd == m_server_socket) {
+                std::cout << "New connection" << std::endl;
                 const int new_conn = accept(fd, nullptr, nullptr);
 #ifndef __linux__
                 change_events.push_back(prepare_event_to_add(new_conn));
@@ -116,6 +118,7 @@ void Server::run() {
 #else
                 if ((events[i].filter&EVFILT_READ) != 0) {
 #endif
+                    std::cout << "Received message" << std::endl;
                     while ((num_chars = read(fd, buffer, sizeof(buffer))) > 0) {
                         message += std::string(buffer, num_chars);
                     }
@@ -128,6 +131,7 @@ void Server::run() {
                 if ((events[i].flags&EV_EOF) != 0) {
                     change_events.push_back(prepare_event_to_del(fd));
 #endif
+                    std::cout << "Connection closed" << std::endl;
                     remove_client(fd);
                 }
             }
