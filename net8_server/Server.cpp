@@ -62,7 +62,7 @@ Server::Server(int port) {
 struct kevent prepare_event_to_add(int fd) {
     struct kevent ev = {};
     ev.ident = fd;
-    ev.flags = EV_ADD|EV_ENABLE;
+    ev.flags = EV_ADD;
     ev.filter = EVFILT_READ;
     return ev;
 }
@@ -70,7 +70,7 @@ struct kevent prepare_event_to_add(int fd) {
 struct kevent prepare_event_to_del(int fd) {
     struct kevent ev = {};
     ev.ident = fd;
-    ev.flags = EV_DELETE|EV_DISABLE;
+    ev.flags = EV_DELETE;
     return ev;
 }
 #endif
