@@ -13,11 +13,9 @@
 #endif
 
 #include <list>
-#include <map>
-#include <vector>
 #include <string>
 
-#include "Game.h"
+#include "Rooms.h"
 
 class Server {
 public:
@@ -40,9 +38,8 @@ private:
     int m_max_events = 16;
     int m_timeout = 10; // ms
     std::list<int> m_client_sockets;
-    std::vector<Game> m_rooms;
-    std::map<int, Game*> m_room_of_client;
     int m_max_connections = 128;
+    Rooms m_rooms;
 };
 
 

@@ -21,7 +21,7 @@ private:
     std::string m_name;
     int m_socket;
     int m_game_id;
-    bool playing;
+    bool m_playing;
 };
 
 

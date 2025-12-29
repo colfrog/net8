@@ -54,8 +54,6 @@ Server::Server(int port) {
     ev.filter = EVFILT_READ;
     kevent(m_kqueue_fd, &ev, 1, nullptr, 0, nullptr);
 #endif
-
-    m_rooms.emplace_back(this, std::string("default"));
 }
 
 #ifndef __linux__

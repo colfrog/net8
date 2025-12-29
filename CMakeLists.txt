@@ -15,4 +15,6 @@ add_executable(net8 net8_server/main.cpp
         net8_server/Player.cpp
         net8_server/Player.h
         net8_server/Pile.cpp
-        net8_server/Pile.h)
+        net8_server/Pile.h
+        net8_server/Rooms.cpp
+        net8_server/Rooms.h)
