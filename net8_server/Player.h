@@ -9,19 +9,24 @@
 
 class Player {
 public:
-    Player(int socket, int game_id);
+    Player(int socket, std::string name);
 
     void set_name(std::string name);
+    const std::string &get_name() const;
     void set_game_id(int game_id);
-    int get_game_id();
+    int get_game_id() const;
+    void set_playing(bool playing);
+    bool get_playing() const;
 
-    int get_socket();
+    int get_socket() const;
+
+    bool operator==(const Player &player) const;
 
 private:
-    std::string m_name;
     int m_socket;
-    int m_game_id;
-    bool m_playing;
+    std::string m_name;
+    int m_game_id = 0;
+    bool m_playing = false;
 };
 
 

@@ -10,17 +10,24 @@
 
 #include "Game.h"
 
+class Server;
+
 class Rooms
 {
 public:
-    Rooms();
+    Rooms(Server *server);
 
-    void add_room(std::string name);
+    int add_room(const std::string &name);
 
+    void add_player(Player *player);
+    void remove_player(Player *player);
+    void transfer_player(Player *player, int game_id);
+    const std::list<Player *> get_players(int game_id) const;
 
 private:
+    Server *m_server;
     std::vector<Game> m_rooms;
-    std::map<int, Game*> m_room_of_socket;
+    std::map<Player *, Game *> m_room_of_player;
 };
 
 

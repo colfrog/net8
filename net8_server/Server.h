@@ -15,14 +15,14 @@
 #include <list>
 #include <string>
 
-#include "Rooms.h"
+#include "Playground.h"
 
 class Server {
 public:
     Server(int port);
     void run();
-    void send_to_room(int game_id, std::string message);
-    void send_to_one(int socket, std::string message);
+    void send_to_room(int game_id, const std::string &message) const;
+    void send_to_one(int socket, const std::string &message) const;
 
 private:
     void add_client(int socket);
@@ -39,7 +39,7 @@ private:
     int m_timeout = 10; // ms
     std::list<int> m_client_sockets;
     int m_max_connections = 128;
-    Rooms m_rooms;
+    Playground m_playground{this};
 };
 
 

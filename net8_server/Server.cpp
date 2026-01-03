@@ -73,6 +73,19 @@ struct kevent prepare_event_to_del(int fd) {
 }
 #endif
 
+void Server::send_to_room(int game_id, const std::string &message) const {
+    const std::list<Player *> players = m_playground.get_players(game_id);
+    std::string buf = message + std::string("\r\n");
+    for (const Player *player : players) {
+        write(player->get_socket(), buf.c_str(), buf.size());
+    }
+}
+
+void Server::send_to_one(int socket, const std::string &message) const {
+    std::string buf = message + std::string("\r\n");
+    write(socket, buf.c_str(), buf.size());
+}
+
 void Server::run() {
     int events_ready, fd;
 #ifdef __linux__
@@ -164,7 +177,7 @@ void Server::remove_client(int socket) {
 #endif
 
     m_client_sockets.remove(socket);
-    m_room_of_client[socket]->remove_player(socket);
+    m_playground.remove_player(socket);
     close(socket);
 }
 

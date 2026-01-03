@@ -28,7 +28,7 @@ void Deck::shuffle() {
     std::ranges::shuffle(m_cards.begin(), m_cards.end(), rng);
 }
 
-void Deck::rebuild(Pile pile) {
+void Deck::rebuild(Pile &pile) {
     pile.clear();
     build();
 }

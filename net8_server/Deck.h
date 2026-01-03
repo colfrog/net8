@@ -17,7 +17,7 @@ public:
 
     void build();
     void shuffle();
-    void rebuild(Pile pile);
+    void rebuild(Pile &pile);
     void set_n_players(int n_players);
     Card draw();
 
