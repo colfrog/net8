@@ -8,6 +8,7 @@
 #ifdef __linux__
 #include <sys/epoll.h>
 #else
+#include <sys/types.h>
 #include <sys/event.h>
 #include <sys/time.h>
 #endif
