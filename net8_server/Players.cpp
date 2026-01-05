@@ -19,3 +19,7 @@ void Players::remove(Player *player) {
     m_player_of_socket.erase(player->get_socket());
     m_players.remove(*player);
 }
+
+bool Players::exists(int socket) const {
+    return m_player_of_socket.contains(socket);
+}

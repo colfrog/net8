@@ -18,7 +18,7 @@ void Game::add_player(Player *player) {
 
 void Game::remove_player(Player *player) {
     m_players.remove(player);
-    if (m_players.empty()) {
+    if (m_players.empty() && m_game_id != 0) {
         m_active = false;
     }
 }

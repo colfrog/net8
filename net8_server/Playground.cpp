@@ -16,9 +16,11 @@ void Playground::add_player(int socket, const std::string &name) {
 }
 
 void Playground::remove_player(int socket) {
-    Player *player = m_players.get(socket);
-    m_rooms.remove_player(player);
-    m_players.remove(player);
+    if (m_players.exists(socket)) {
+        Player *player = m_players.get(socket);
+        m_rooms.remove_player(player);
+        m_players.remove(player);
+    }
 }
 
 void Playground::transfer_player(int socket, int game_id) {

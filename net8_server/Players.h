@@ -16,6 +16,7 @@ public:
 
     Player *get(int socket);
     void remove(Player *player);
+    bool exists(int socket) const;
 
 private:
     std::list<Player> m_players;

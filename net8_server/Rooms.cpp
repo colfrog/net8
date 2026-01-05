@@ -11,11 +11,12 @@ Rooms::Rooms(Server *server) : m_server{server} {
 }
 
 int Rooms::add_room(const std::string &name) {
-    auto it = std::find_if(m_rooms.begin(), m_rooms.end(), [](const Game *game) { return game->is_active(); });
+    auto it = std::find_if(m_rooms.begin(), m_rooms.end(), [](const Game &game) { return game.is_active(); });
     if (it != m_rooms.end()) {
         it->reset();
         it->set_name(name);
         it->set_active(true);
+        return std::distance(m_rooms.begin(), it);
     } else {
         m_rooms.emplace_back(m_server, name);
         return m_rooms.size() - 1;
