@@ -21,22 +21,28 @@ public:
 
     void add_player(Player *player);
     void remove_player(Player *player);
-    const std::list<Player *> get_players() const;
+    const std::list<Player *> &get_players() const;
 
     void set_name(std::string name);
     const std::string &get_name() const;
     bool is_active() const;
     void set_active(bool active);
+    bool is_deletable() const;
+    void set_deletable(bool deletable);
+
+    Deck &get_deck();
+    Pile &get_pile();
+    bool fits_rules(const Card &card);
 
 private:
     Server *m_server;
-    int m_game_id;
     std::string m_name;
     Deck m_deck{0};
     Pile m_pile;
     std::list<Player *> m_players;
 
-    bool m_active;
+    bool m_deletable = true;
+    bool m_active = true;
 };
 
 

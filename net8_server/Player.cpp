@@ -24,6 +24,8 @@ int Player::get_game_id() const {
 
 void Player::set_playing(bool playing) {
     m_playing = playing;
+    if (m_playing == false)
+        m_hand = Hand();
 }
 
 bool Player::get_playing() const {

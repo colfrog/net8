@@ -28,6 +28,6 @@ void Playground::transfer_player(int socket, int game_id) {
     m_rooms.transfer_player(player, game_id);
 }
 
-const std::list<Player *> Playground::get_players(int game_id) const {
+const std::list<Player *> &Playground::get_players(int game_id) const {
     return m_rooms.get_players(game_id);
 }

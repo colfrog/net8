@@ -8,6 +8,7 @@
 
 Rooms::Rooms(Server *server) : m_server{server} {
     add_room("default");
+    m_rooms[0].set_deletable(false);
 }
 
 int Rooms::add_room(const std::string &name) {
@@ -38,6 +39,6 @@ void Rooms::transfer_player(Player *player, int game_id) {
     m_rooms[game_id].add_player(player);
 }
 
-const std::list<Player *> Rooms::get_players(int game_id) const {
+const std::list<Player *> &Rooms::get_players(int game_id) const {
     return m_rooms[game_id].get_players();
 }

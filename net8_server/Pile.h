@@ -13,13 +13,12 @@ class Pile {
 public:
     Pile() = default;
 
-    [[nodiscard]] Card top_card() const;
-    void add(const Card *card);
-    bool contains(const Card *card) const;
+    const Card &top_card() const;
+    void add(const Card &card);
     void clear();
 
 private:
-    std::list<const Card *> m_cards;
+    std::list<Card> m_cards;
 };
 
 

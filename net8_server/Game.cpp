@@ -18,12 +18,12 @@ void Game::add_player(Player *player) {
 
 void Game::remove_player(Player *player) {
     m_players.remove(player);
-    if (m_players.empty() && m_game_id != 0) {
+    if (m_players.empty() && m_deletable) {
         m_active = false;
     }
 }
 
-const std::list<Player *> Game::get_players() const {
+const std::list<Player *> &Game::get_players() const {
     return m_players;
 }
 
@@ -41,4 +41,25 @@ bool Game::is_active() const {
 
 void Game::set_active(bool active) {
     m_active = active;
+}
+
+bool Game::is_deletable() const {
+    return m_deletable;
+}
+
+void Game::set_deletable(bool deletable) {
+    m_deletable = deletable;
+}
+
+Deck &Game::get_deck() {
+    return m_deck;
+}
+
+Pile &Game::get_pile() {
+    return m_pile;
+}
+
+bool Game::fits_rules(const Card &card) {
+    const Card &top_card = m_pile.top_card();
+    return card.custom_rules(this) || top_card.get_type() == card.get_type() || top_card.get_face() == card.get_face();
 }

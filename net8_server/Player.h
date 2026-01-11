@@ -7,6 +7,8 @@
 
 #include <string>
 
+#include "Hand.h"
+
 class Player {
 public:
     Player(int socket, std::string name);
@@ -27,6 +29,7 @@ private:
     std::string m_name;
     int m_game_id = 0;
     bool m_playing = false;
+    Hand m_hand;
 };
 
 
