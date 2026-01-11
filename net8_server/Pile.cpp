@@ -6,11 +6,11 @@
 
 #include <algorithm>
 
-const Card &Pile::top_card() const {
+const Card *Pile::top_card() const {
     return m_cards.front();
 }
 
-void Pile::add(const Card &card) {
+void Pile::add(const Card *card) {
     m_cards.push_front(card);
 }
 

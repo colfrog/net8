@@ -47,8 +47,8 @@ public:
     Type get_type() const;
 
     bool operator==(const Card &other) const;
-    static bool face_sort_comparator(const Card &first, const Card &second);
-    static bool type_sort_comparator(const Card &first, const Card &second);
+    static bool face_sort_comparator(const Card *first, const Card *second);
+    static bool type_sort_comparator(const Card *first, const Card *second);
 
 private:
     Face m_face;

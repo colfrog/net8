@@ -13,12 +13,12 @@ class Pile {
 public:
     Pile() = default;
 
-    const Card &top_card() const;
-    void add(const Card &card);
+    const Card *top_card() const;
+    void add(const Card *card);
     void clear();
 
 private:
-    std::list<Card> m_cards;
+    std::list<const Card *> m_cards;
 };
 
 

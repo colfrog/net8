@@ -59,7 +59,7 @@ Pile &Game::get_pile() {
     return m_pile;
 }
 
-bool Game::fits_rules(const Card &card) {
-    const Card &top_card = m_pile.top_card();
-    return card.custom_rules(this) || top_card.get_type() == card.get_type() || top_card.get_face() == card.get_face();
+bool Game::fits_rules(const Card *card) {
+    const Card *top_card = m_pile.top_card();
+    return card->custom_rules(this) || top_card->get_type() == card->get_type() || top_card->get_face() == card->get_face();
 }

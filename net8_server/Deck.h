@@ -19,11 +19,12 @@ public:
     void shuffle();
     void rebuild(Pile &pile);
     void set_n_players(int n_players);
-    Card draw();
+    Card *draw();
 
 private:
     int m_n_players;
     std::vector<Card> m_cards;
+    std::vector<Card *> m_deck;
     static std::mt19937 rng;
 };
 

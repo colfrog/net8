@@ -32,7 +32,7 @@ public:
 
     Deck &get_deck();
     Pile &get_pile();
-    bool fits_rules(const Card &card);
+    bool fits_rules(const Card *card);
 
 private:
     Server *m_server;

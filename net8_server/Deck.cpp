@@ -25,7 +25,7 @@ void Deck::build() {
 }
 
 void Deck::shuffle() {
-    std::ranges::shuffle(m_cards.begin(), m_cards.end(), rng);
+    std::ranges::shuffle(m_deck.begin(), m_deck.end(), rng);
 }
 
 void Deck::rebuild(Pile &pile) {
@@ -37,8 +37,8 @@ void Deck::set_n_players(int n_players) {
     m_n_players = n_players;
 }
 
-Card Deck::draw() {
-    Card card = m_cards.back();
+Card *Deck::draw() {
+    Card *card = m_deck.back();
     m_cards.pop_back();
     return card;
 }

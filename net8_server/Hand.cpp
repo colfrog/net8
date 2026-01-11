@@ -20,7 +20,7 @@ bool Hand::play(Game *game, int card_index, const std::string &arg) {
 
     if (game->fits_rules(m_cards[card_index])) {
         game->get_pile().add(m_cards[card_index]);
-        m_cards[card_index].effect(game, arg);
+        m_cards[card_index]->effect(game, arg);
         m_cards.erase(m_cards.begin() + card_index);
         return true;
     }
@@ -28,6 +28,6 @@ bool Hand::play(Game *game, int card_index, const std::string &arg) {
     return false;
 }
 
-const std::vector<Card> &Hand::get_cards() const {
+const std::vector<Card *> &Hand::get_cards() const {
     return m_cards;
 }
