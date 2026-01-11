@@ -15,6 +15,7 @@ public:
     void add_player(int socket, const std::string &name);
 
     Player *get(int socket);
+    const Player *get(int socket) const;
     void remove(Player *player);
     bool exists(int socket) const;
 

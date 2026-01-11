@@ -11,11 +11,11 @@
 #include "Pile.h"
 #include "Player.h"
 
-class Server; // Prototype to have a circular dependency Server->Game->Server
+class Net8Protocol;
 
 class Game {
 public:
-    Game(Server *server, std::string name);
+    Game(Net8Protocol *protocol, std::string name);
 
     void reset();
 
@@ -35,7 +35,7 @@ public:
     bool fits_rules(const Card *card);
 
 private:
-    Server *m_server;
+    Net8Protocol *m_protocol;
     std::string m_name;
     Deck m_deck{0};
     Pile m_pile;

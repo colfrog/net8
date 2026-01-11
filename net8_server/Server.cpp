@@ -73,15 +73,7 @@ struct kevent prepare_event_to_del(int fd) {
 }
 #endif
 
-void Server::send_to_room(int game_id, const std::string &message) const {
-    const std::list<Player *> players = m_playground.get_players(game_id);
-    std::string buf = message + std::string("\r\n");
-    for (const Player *player : players) {
-        write(player->get_socket(), buf.c_str(), buf.size());
-    }
-}
-
-void Server::send_to_one(int socket, const std::string &message) const {
+void Server::send_message(int socket, const std::string &message) {
     std::string buf = message + std::string("\r\n");
     write(socket, buf.c_str(), buf.size());
 }
@@ -119,7 +111,7 @@ void Server::run() {
 #endif
             if (fd == m_server_socket) {
                 std::cout << "New connection" << std::endl;
-                const int new_conn = accept(fd, nullptr, nullptr);
+                const int new_conn = accept(fd, nullptr, nullptr); // TODO: Keep the IP address for logging
 #ifndef __linux__
                 change_events.push_back(prepare_event_to_add(new_conn));
 #endif
@@ -168,6 +160,7 @@ void Server::add_client(int socket) {
 #endif
 
     m_client_sockets.push_back(socket);
+    m_protocol.on_connect(socket);
 }
 
 void Server::remove_client(int socket) {
@@ -177,11 +170,15 @@ void Server::remove_client(int socket) {
 #endif
 
     m_client_sockets.remove(socket);
-    m_playground.remove_player(socket);
+    m_protocol.on_disconnect(socket);
     close(socket);
 }
 
 void Server::receive_message(int socket, const std::string &message) {
-    std::cout << message << std::endl;
-    write(socket, message.c_str(), message.size());
+    std::cout << message << std::endl; // TODO: Replace with proper logging eventually
+    try {
+        m_protocol.handle_message(socket, message);
+    } catch (const Net8Protocol::protocol_error &e) {
+        send_message(socket, "ERROR:" + std::string(e.what()));
+    }
 }

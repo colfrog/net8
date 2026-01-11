@@ -17,6 +17,7 @@ public:
 
     void draw(Game *game);
     bool play(Game *game, int card_index, const std::string &arg);
+    void clear();
 
     const std::vector<Card *> &get_cards() const;
 

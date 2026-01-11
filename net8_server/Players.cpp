@@ -8,11 +8,19 @@
 
 void Players::add_player(int socket, const std::string &name) {
     m_players.emplace_back(socket, name);
-    m_player_of_socket.insert({socket, &*m_players.end()});
+    m_player_of_socket[socket] = &m_players.back();
 }
 
 Player *Players::get(int socket) {
-    return m_player_of_socket[socket];
+    if (m_player_of_socket.contains(socket))
+        return m_player_of_socket[socket];
+    return nullptr;
+}
+
+const Player *Players::get(int socket) const {
+    if (m_player_of_socket.contains(socket))
+        return m_player_of_socket.at(socket);
+    return nullptr;
 }
 
 void Players::remove(Player *player) {

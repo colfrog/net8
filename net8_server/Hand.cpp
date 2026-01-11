@@ -28,6 +28,10 @@ bool Hand::play(Game *game, int card_index, const std::string &arg) {
     return false;
 }
 
+void Hand::clear() {
+    m_cards.clear();
+}
+
 const std::vector<Card *> &Hand::get_cards() const {
     return m_cards;
 }

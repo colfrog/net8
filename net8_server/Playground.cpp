@@ -4,7 +4,7 @@
 
 #include "Playground.h"
 
-Playground::Playground(Server *server) : m_server{server}, m_rooms{server} {}
+Playground::Playground(Net8Protocol *protocol) : m_protocol{protocol}, m_rooms{protocol} {}
 
 int Playground::add_room(const std::string &name) {
     return m_rooms.add_room(name);
@@ -26,6 +26,10 @@ void Playground::remove_player(int socket) {
 void Playground::transfer_player(int socket, int game_id) {
     Player *player = m_players.get(socket);
     m_rooms.transfer_player(player, game_id);
+}
+
+const Player *Playground::get_player(int socket) const {
+    return m_players.get(socket);
 }
 
 const std::list<Player *> &Playground::get_players(int game_id) const {

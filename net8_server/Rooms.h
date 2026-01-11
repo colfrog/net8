@@ -10,12 +10,10 @@
 
 #include "Game.h"
 
-class Server;
-
 class Rooms
 {
 public:
-    Rooms(Server *server);
+    Rooms(Net8Protocol *protocol);
 
     int add_room(const std::string &name);
 
@@ -25,7 +23,7 @@ public:
     const std::list<Player *> &get_players(int game_id) const;
 
 private:
-    Server *m_server;
+    Net8Protocol *m_protocol;
     std::vector<Game> m_rooms;
     std::map<Player *, Game *> m_room_of_player;
 };

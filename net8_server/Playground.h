@@ -10,16 +10,17 @@
 
 class Playground {
 public:
-    Playground(Server *server);
+    Playground(Net8Protocol *protocol);
 
     int add_room(const std::string &name);
 
     void add_player(int socket, const std::string &name);
     void remove_player(int socket);
     void transfer_player(int socket, int game_id);
+    const Player *get_player(int socket) const;
     const std::list<Player *> &get_players(int game_id) const;
 private:
-    Server *m_server;
+    Net8Protocol *m_protocol;
     Rooms m_rooms;
     Players m_players;
 };

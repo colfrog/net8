@@ -16,14 +16,13 @@
 #include <list>
 #include <string>
 
-#include "Playground.h"
+#include "Net8Protocol.h"
 
 class Server {
 public:
     Server(int port);
     void run();
-    void send_to_room(int game_id, const std::string &message) const;
-    void send_to_one(int socket, const std::string &message) const;
+    static void send_message(int socket, const std::string &message);
 
 private:
     void add_client(int socket);
@@ -40,7 +39,7 @@ private:
     int m_timeout = 10; // ms
     std::list<int> m_client_sockets;
     int m_max_connections = 128;
-    Playground m_playground{this};
+    Net8Protocol m_protocol{this};
 };
 
 

@@ -6,7 +6,7 @@
 
 #include <algorithm>
 
-Rooms::Rooms(Server *server) : m_server{server} {
+Rooms::Rooms(Net8Protocol *protocol) : m_protocol(protocol) {
     add_room("default");
     m_rooms[0].set_deletable(false);
 }
@@ -19,7 +19,7 @@ int Rooms::add_room(const std::string &name) {
         it->set_active(true);
         return std::distance(m_rooms.begin(), it);
     } else {
-        m_rooms.emplace_back(m_server, name);
+        m_rooms.emplace_back(m_protocol, name);
         return m_rooms.size() - 1;
     }
 }
@@ -37,6 +37,7 @@ void Rooms::transfer_player(Player *player, int game_id) {
     Game *current_room = m_room_of_player[player];
     current_room->remove_player(player);
     m_rooms[game_id].add_player(player);
+    player->set_game_id(game_id);
 }
 
 const std::list<Player *> &Rooms::get_players(int game_id) const {

@@ -4,7 +4,7 @@
 
 #include "Game.h"
 
-Game::Game(Server *server, std::string name) : m_server(server), m_name(std::move(name)) {}
+Game::Game(Net8Protocol *protocol, std::string name) : m_protocol(protocol), m_name(std::move(name)) {}
 
 void Game::reset() {
     m_deck.set_n_players(0);
