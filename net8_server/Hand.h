@@ -11,8 +11,7 @@
 
 class Game;
 
-class Hand
-{
+class Hand {
 public:
     Hand() = default;
 

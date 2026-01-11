@@ -23,4 +23,6 @@ add_executable(net8 net8_server/main.cpp
         net8_server/Playground.cpp
         net8_server/Playground.h
         net8_server/Hand.cpp
-        net8_server/Hand.h)
+        net8_server/Hand.h
+        net8_server/Card8.cpp
+        net8_server/Card8.h)

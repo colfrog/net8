@@ -37,6 +37,7 @@ public:
     };
 
     Card(Type t, Face f);
+    virtual ~Card() = default;
 
     virtual void effect(Game *game, const std::string &arg) {}
     virtual bool custom_rules(Game *game) const {
@@ -50,7 +51,7 @@ public:
     static bool face_sort_comparator(const Card *first, const Card *second);
     static bool type_sort_comparator(const Card *first, const Card *second);
 
-private:
+protected:
     Face m_face;
     Type m_type;
 };
