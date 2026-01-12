@@ -2,8 +2,6 @@
 // Created by laurent on 22/12/2025.
 //
 
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -73,9 +71,12 @@ struct kevent prepare_event_to_del(int fd) {
 }
 #endif
 
-void Server::send_message(int socket, const std::string &message) {
-    std::string buf = message + std::string("\r\n");
-    write(socket, buf.c_str(), buf.size());
+void Server::send_message(int socket, const std::string &message) const {
+    if (m_clients.contains(socket)) {
+        const std::string buf = message + std::string("\r\n");
+        write(socket, buf.c_str(), buf.size());
+        m_protocol.log_message(true, socket, message);
+    }
 }
 
 void Server::run() {
@@ -91,6 +92,8 @@ void Server::run() {
     std::string message;
     char buffer[1024];
     ssize_t num_chars = 0;
+    sockaddr_in addr{};
+    socklen_t addr_len = sizeof(addr);
     while (true) {
 #ifdef __linux__
         events_ready = epoll_wait(m_epoll_fd, events, m_max_events, m_timeout);
@@ -111,19 +114,17 @@ void Server::run() {
 #endif
             if (fd == m_server_socket) {
                 std::cout << "New connection" << std::endl;
-                const int new_conn = accept(fd, nullptr, nullptr); // TODO: Keep the IP address for logging
+                const int new_conn = accept(fd, reinterpret_cast<sockaddr *>(&addr), &addr_len);
 #ifndef __linux__
                 change_events.push_back(prepare_event_to_add(new_conn));
 #endif
-                add_client(new_conn);
+                add_client(new_conn, addr);
             } else {
-                std::cout << "Received event from client" << std::endl;
 #ifdef __linux__
                 if ((events[i].events&EPOLLIN) != 0) {
 #else
                 if (true) {
 #endif
-                    std::cout << "Received message" << std::endl;
                     while ((num_chars = read(fd, buffer, sizeof(buffer))) > 0) {
                         message += std::string(buffer, num_chars);
                     }
@@ -144,7 +145,13 @@ void Server::run() {
     }
 }
 
-void Server::add_client(int socket) {
+std::string Server::get_ip4_addr(int socket) const {
+    if (m_clients.contains(socket))
+        return inet_ntoa(m_clients.at(socket));
+    return "<NOADDR>";
+}
+
+void Server::add_client(int socket, sockaddr_in addr) {
     // On macOS/BSD we register the client in a single system call while asking for the next event
 #ifdef __linux__
     epoll_event ev = {};
@@ -159,7 +166,7 @@ void Server::add_client(int socket) {
         throw std::runtime_error("Error adding epoll event for client");
 #endif
 
-    m_client_sockets.push_back(socket);
+    m_clients[socket] = addr.sin_addr;
     m_protocol.on_connect(socket);
 }
 
@@ -169,15 +176,16 @@ void Server::remove_client(int socket) {
     epoll_ctl(m_epoll_fd, EPOLL_CTL_DEL, socket, nullptr);
 #endif
 
-    m_client_sockets.remove(socket);
+    m_clients.erase(socket);
     m_protocol.on_disconnect(socket);
     close(socket);
 }
 
 void Server::receive_message(int socket, const std::string &message) {
-    std::cout << message << std::endl; // TODO: Replace with proper logging eventually
+    std::string trimmed = message.substr(0, message.size() - 2);
     try {
-        m_protocol.handle_message(socket, message);
+        m_protocol.log_message(false, socket, trimmed);
+        m_protocol.handle_message(socket, trimmed);
     } catch (const Net8Protocol::protocol_error &e) {
         send_message(socket, "ERROR:" + std::string(e.what()));
     }

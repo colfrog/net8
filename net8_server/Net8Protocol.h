@@ -20,18 +20,20 @@ public:
 
     void send_to_room(int game_id, const std::string &message) const;
     bool is_identified(int socket) const;
+    void fail_if_unidentified(int socket) const;
 
     void handle_message(int socket, const std::string &message);
+    void log_message(bool out, int socket, const std::string &message) const;
 
     void on_connect(int socket);
     void on_disconnect(int socket);
-    void on_ident(int socket, const std::string &name);
-    void on_chat(int socket, const std::string &message);
 
     class protocol_error : public std::runtime_error {
         using std::runtime_error::runtime_error;
     };
 private:
+    void on_ident(int socket, const std::string &name);
+    void on_chat(int socket, const std::string &message);
 
     Server *m_server;
     Playground m_playground;

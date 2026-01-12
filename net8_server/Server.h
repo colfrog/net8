@@ -13,8 +13,11 @@
 #include <sys/time.h>
 #endif
 
-#include <list>
+#include <map>
 #include <string>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include "Net8Protocol.h"
 
@@ -22,10 +25,11 @@ class Server {
 public:
     Server(int port);
     void run();
-    static void send_message(int socket, const std::string &message);
+    std::string get_ip4_addr(int socket) const;
+    void send_message(int socket, const std::string &message) const;
 
 private:
-    void add_client(int socket);
+    void add_client(int socket, sockaddr_in addr);
     void remove_client(int socket);
     void receive_message(int socket, const std::string &message);
 
@@ -37,7 +41,7 @@ private:
 #endif
     int m_max_events = 16;
     int m_timeout = 10; // ms
-    std::list<int> m_client_sockets;
+    std::map<int, in_addr> m_clients;
     int m_max_connections = 128;
     Net8Protocol m_protocol{this};
 };
