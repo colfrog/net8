@@ -45,8 +45,10 @@ private:
     void on_ident(int socket, const std::string &name);
     void on_chat(int socket, const std::string &message);
     void on_addroom(int socket, const std::string &message);
+    void on_leaveroom(int socket, const std::string &message);
     void on_switchroom(int socket, const std::string &message);
     void on_joingame(int socket, const std::string &message);
+    void on_partgame(int socket, const std::string &message);
     void on_play(int socket, const std::string &message);
     void on_draw(int socket, const std::string &message);
 
