@@ -26,7 +26,7 @@ void Deck::build() {
     Pile &pile = m_game->get_pile();
     m_saved_card = pile.top_card();
     pile.clear();
-    clear();
+    clear(m_saved_card);
     if (m_saved_card != nullptr)
         pile.add(m_saved_card);
 
