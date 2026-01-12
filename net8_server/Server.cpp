@@ -79,6 +79,12 @@ void Server::send_message(int socket, const std::string &message) const {
     }
 }
 
+void Server::send_to_clients(const std::string &message) const {
+    for (auto client : m_clients) {
+        send_message(client.first, message);
+    }
+}
+
 void Server::run() {
     int events_ready, fd;
 #ifdef __linux__

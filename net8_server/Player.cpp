@@ -28,7 +28,7 @@ void Player::set_playing(bool playing) {
         m_hand.clear();
 }
 
-bool Player::get_playing() const {
+bool Player::is_playing() const {
     return m_playing;
 }
 

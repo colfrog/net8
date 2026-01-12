@@ -27,6 +27,7 @@ public:
     void run();
     std::string get_ip4_addr(int socket) const;
     void send_message(int socket, const std::string &message) const;
+    void send_to_clients(const std::string &message) const;
 
 private:
     void add_client(int socket, sockaddr_in addr);

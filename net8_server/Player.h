@@ -18,7 +18,7 @@ public:
     void set_game_id(int game_id);
     int get_game_id() const;
     void set_playing(bool playing);
-    bool get_playing() const;
+    bool is_playing() const;
 
     int get_socket() const;
 

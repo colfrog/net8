@@ -5,7 +5,9 @@
 #include "Game.h"
 #include "Net8Protocol.h"
 
-Game::Game(Net8Protocol *protocol, std::string name) : m_protocol(protocol), m_name(std::move(name)) {}
+Game::Game(Net8Protocol *protocol, std::string name, int game_id) : m_protocol{protocol}, m_name{std::move(name)}, m_game_id{game_id} {
+    m_protocol->announce_new_room(this);
+}
 
 void Game::reset() {
     m_deck.reset();
@@ -13,27 +15,72 @@ void Game::reset() {
 
 void Game::new_game() {
     m_deck.reset();
+    Card *top_card = m_deck.draw();
+    m_pile.add(top_card);
     for (Player *player : m_players) {
         player->get_hand().clear();
         player->get_hand().draw_n(this, 8);
         m_protocol->announce_hand(player);
     }
+    m_protocol->announce_top_card(this);
+    m_protocol->announce_turn(m_players.front());
 }
 
 void Game::add_player(Player *player) {
-    m_players.push_back(player);
+    m_spectators.push_back(player);
     player->set_playing(false);
+    m_protocol->announce_spectator(player);
 }
 
 void Game::remove_player(Player *player) {
-    m_players.remove(player);
-    if (m_players.empty() && m_deletable) {
+    if (player->is_playing()) {
+        bool is_current = player == m_players.front();
+        m_players.remove(player);
+        m_protocol->announce_leave(player);
+        if (is_current)
+            m_protocol->announce_turn(m_players.front());
+    } else {
+        m_spectators.remove(player);
+        m_protocol->announce_leave(player);
+    }
+
+    if (m_players.empty() && m_spectators.empty() && m_deletable) {
         m_active = false;
+        m_protocol->announce_inactive_room(this);
     }
 }
 
-const std::list<Player *> &Game::get_players() const {
-    return m_players;
+void Game::join_game(Player *player) {
+    if (!player->is_playing()) {
+        auto it = std::ranges::find(m_spectators.begin(), m_spectators.end(), player);
+        if (it != m_spectators.end()) {
+            m_players.push_back(player);
+            m_spectators.erase(it);
+            m_protocol->announce_join(player);
+        }
+    }
+}
+
+void Game::part_game(Player *player) {
+    if (player->is_playing()) {
+        auto it = std::ranges::find(m_players.begin(), m_players.end(), player);
+        if (it != m_players.end()) {
+            m_spectators.push_back(player);
+            m_players.erase(it);
+            m_protocol->announce_part(player);
+        }
+    }
+}
+
+const std::list<const Player *> Game::get_players() const {
+    std::list<const Player *> all_players;
+    for (Player *player : m_players)
+        all_players.push_back(player);
+
+    for (Player *player : m_spectators)
+        all_players.push_back(player);
+
+    return all_players;
 }
 
 void Game::set_name(std::string name) {
@@ -60,11 +107,23 @@ void Game::set_deletable(bool deletable) {
     m_deletable = deletable;
 }
 
+int Game::get_game_id() const {
+    return m_game_id;
+}
+
 Deck &Game::get_deck() {
     return m_deck;
 }
 
+const Deck &Game::get_deck() const {
+    return m_deck;
+}
+
 Pile &Game::get_pile() {
+    return m_pile;
+}
+
+const Pile &Game::get_pile() const {
     return m_pile;
 }
 
@@ -92,6 +151,13 @@ void Game::do_turn(Player *player, bool play, int card_index, const std::string 
             m_protocol->send_to_room(player->get_socket(), "Starting new game...");
             new_game();
         }
-
+    } else {
+        hand.draw(this);
+        m_protocol->announce_hand(player);
     }
+
+    m_players.pop_front();
+    m_players.push_back(player);
+    m_protocol->announce_turn(m_players.front());
+    m_protocol->announce_top_card(this);
 }

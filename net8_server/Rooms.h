@@ -20,7 +20,7 @@ public:
     void add_player(Player *player);
     void remove_player(Player *player);
     void transfer_player(Player *player, int game_id);
-    const std::list<Player *> &get_players(int game_id) const;
+    const std::list<const Player *> get_players(int game_id) const;
 
 private:
     Net8Protocol *m_protocol;

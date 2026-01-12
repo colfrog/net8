@@ -32,6 +32,6 @@ const Player *Playground::get_player(int socket) const {
     return m_players.get(socket);
 }
 
-const std::list<Player *> &Playground::get_players(int game_id) const {
+const std::list<const Player *> Playground::get_players(int game_id) const {
     return m_rooms.get_players(game_id);
 }

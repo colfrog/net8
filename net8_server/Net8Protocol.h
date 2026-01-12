@@ -25,7 +25,15 @@ public:
     void handle_message(int socket, const std::string &message);
     void log_message(bool out, int socket, const std::string &message) const;
 
-    void announce_hand(Player *player);
+    void announce_hand(const Player *player) const;
+    void announce_join(const Player *player) const;
+    void announce_part(const Player *player) const;
+    void announce_leave(const Player *player) const;
+    void announce_spectator(const Player *player) const;
+    void announce_turn(const Player *player) const;
+    void announce_top_card(const Game *game) const;
+    void announce_inactive_room(const Game *game) const;
+    void announce_new_room(const Game *game) const;
 
     void on_connect(int socket);
     void on_disconnect(int socket);

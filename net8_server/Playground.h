@@ -18,7 +18,8 @@ public:
     void remove_player(int socket);
     void transfer_player(int socket, int game_id);
     const Player *get_player(int socket) const;
-    const std::list<Player *> &get_players(int game_id) const;
+    const std::list<const Player *> get_players(int game_id) const;
+
 private:
     Net8Protocol *m_protocol;
     Rooms m_rooms;

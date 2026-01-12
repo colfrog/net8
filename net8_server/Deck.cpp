@@ -34,13 +34,18 @@ void Deck::build() {
     int num_decks = std::ceil(m_game->get_player_count()/4.);
     for (int k = 0; k < num_decks; k++) {
         for (int i = 0; i < static_cast<int>(Card::Type::COUNT); i++) {
-            for (int j = 0; j < static_cast<int>(Card::Face::COUNT); j++) {
-                if (j == 7 || j == 13) // 8 or joker
+            for (int j = 0; j < static_cast<int>(Card::Face::COUNT) - 1; j++) {
+                if (j == 7) // 8
                     card = reinterpret_cast<Card *>(new Card8(static_cast<Card::Type>(i), Card::Face::JOKER));
                 else
                     card = reinterpret_cast<Card *>(new Card(static_cast<Card::Type>(i), static_cast<Card::Face>(j)));
                 m_cards.push_back(card);
             }
+        }
+
+        for (int i = 0; i < 2; i++) { // jokers
+            card = reinterpret_cast<Card *>(new Card8(Card::Type::HEART, Card::Face::JOKER));
+            m_cards.push_back(card);
         }
     }
 

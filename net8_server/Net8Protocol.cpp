@@ -15,7 +15,7 @@ Net8Protocol::Net8Protocol(Server *server) : m_server{server}, m_playground{this
 }
 
 void Net8Protocol::send_to_room(int game_id, const std::string &message) const {
-    const std::list<Player *> players = m_playground.get_players(game_id);
+    const std::list<const Player *> players = m_playground.get_players(game_id);
     for (const Player *player : players) {
         m_server->send_message(player->get_socket(), message);
     }
@@ -44,8 +44,32 @@ void Net8Protocol::log_message(bool out, int socket, const std::string &message)
     std::cout << std::string(out ? "<--" : "-->") << std::string(player ? player->get_name() : "UNIDENTIFIED") << " (" << ip4 << ") - " << message << std::endl;
 }
 
-void Net8Protocol::announce_hand(Player *player) {
+void Net8Protocol::announce_hand(const Player *player) const {
     m_server->send_message(player->get_socket(), "HAND:" + player->get_hand().to_string());
+}
+void Net8Protocol::announce_join(const Player *player) const {
+    send_to_room(player->get_game_id(), "JOIN:" + player->get_name());
+}
+void Net8Protocol::announce_part(const Player *player) const {
+    send_to_room(player->get_game_id(), "PART:" + player->get_name());
+}
+void Net8Protocol::announce_leave(const Player *player) const {
+    send_to_room(player->get_game_id(), "LEAVE:" + player->get_name());
+}
+void Net8Protocol::announce_spectator(const Player *player) const {
+    send_to_room(player->get_game_id(), "SPECTATOR:" + player->get_name());
+}
+void Net8Protocol::announce_turn(const Player *player) const {
+    send_to_room(player->get_game_id(), "TURN:" + player->get_name());
+}
+void Net8Protocol::announce_top_card(const Game *game) const {
+    send_to_room(game->get_game_id(), "TOP:" + game->get_pile().top_card()->to_string());
+}
+void Net8Protocol::announce_inactive_room(const Game *game) const {
+    m_server->send_to_clients("INACTIVE:" + std::to_string(game->get_game_id()));
+}
+void Net8Protocol::announce_new_room(const Game *game) const {
+    m_server->send_to_clients("ROOM:" + std::to_string(game->get_game_id()) + ":" + game->get_name());
 }
 
 void Net8Protocol::on_connect(int socket) {
