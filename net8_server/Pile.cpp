@@ -7,6 +7,8 @@
 #include <algorithm>
 
 const Card *Pile::top_card() const {
+    if (m_cards.empty())
+        return nullptr;
     return m_cards.front();
 }
 

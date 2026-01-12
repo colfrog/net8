@@ -7,18 +7,31 @@
 #include <cmath>
 
 #include "Card8.h"
+#include "Game.h"
 
 std::mt19937 Deck::rng{std::random_device{}()};
 
-Deck::Deck(int n_players) : m_n_players(n_players) {}
+Deck::Deck(Game *game) : m_game(game) {}
 Deck::~Deck() {
+    m_game->get_pile().clear();
     clear();
+    delete m_saved_card;
 }
 
 void Deck::build() {
+    if (m_saved_card != nullptr)
+        delete m_saved_card;
+    m_saved_card = nullptr;
+
+    Pile &pile = m_game->get_pile();
+    m_saved_card = pile.top_card();
+    pile.clear();
     clear();
+    if (m_saved_card != nullptr)
+        pile.add(m_saved_card);
+
     Card *card = nullptr;
-    int num_decks = std::ceil(m_n_players/4);
+    int num_decks = std::ceil(m_game->get_player_count()/4.);
     for (int k = 0; k < num_decks; k++) {
         for (int i = 0; i < static_cast<int>(Card::Type::COUNT); i++) {
             for (int j = 0; j < static_cast<int>(Card::Face::COUNT); j++) {
@@ -30,12 +43,14 @@ void Deck::build() {
             }
         }
     }
+
     shuffle();
 }
 
-void Deck::clear() {
+void Deck::clear(Card *except) {
     for (Card *card : m_cards)
-        delete card;
+        if (card != except)
+            delete card;
 
     m_cards.clear();
 }
@@ -44,17 +59,20 @@ void Deck::shuffle() {
     std::ranges::shuffle(m_cards.begin(), m_cards.end(), rng);
 }
 
-void Deck::rebuild(Pile &pile) {
-    pile.clear();
+void Deck::rebuild() {
     build();
 }
 
-void Deck::set_n_players(int n_players) {
-    m_n_players = n_players;
+void Deck::reset() {
+    m_game->get_pile().clear(); // So we don't save the top card
+    build();
 }
 
 Card *Deck::draw() {
     Card *card = m_cards.back();
     m_cards.pop_back();
+    if (m_cards.size() == 0) {
+        rebuild();
+    }
     return card;
 }

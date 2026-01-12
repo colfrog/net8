@@ -25,6 +25,8 @@ public:
     void handle_message(int socket, const std::string &message);
     void log_message(bool out, int socket, const std::string &message) const;
 
+    void announce_hand(Player *player);
+
     void on_connect(int socket);
     void on_disconnect(int socket);
 
@@ -34,6 +36,11 @@ public:
 private:
     void on_ident(int socket, const std::string &name);
     void on_chat(int socket, const std::string &message);
+    void on_addroom(int socket, const std::string &message);
+    void on_switchroom(int socket, const std::string &message);
+    void on_joingame(int socket, const std::string &message);
+    void on_play(int socket, const std::string &message);
+    void on_draw(int socket, const std::string &message);
 
     Server *m_server;
     Playground m_playground;

@@ -13,18 +13,19 @@
 
 class Deck {
 public:
-    Deck(int n_players);
+    Deck(Game *game);
     ~Deck();
 
     void build();
-    void clear();
+    void clear(Card *except = nullptr);
     void shuffle();
-    void rebuild(Pile &pile);
-    void set_n_players(int n_players);
+    void rebuild();
+    void reset();
     Card *draw();
 
 private:
-    int m_n_players;
+    Game *m_game;
+    const Card *m_saved_card = nullptr;
     std::vector<Card *> m_cards;
     static std::mt19937 rng;
 };

@@ -25,3 +25,7 @@ Card::Face Card::get_face() const {
 Card::Type Card::get_type() const {
     return m_type;
 }
+
+std::string Card::to_string() const {
+    return m_face_string[static_cast<int>(m_face)] + m_type_string[static_cast<int>(m_type)];
+}

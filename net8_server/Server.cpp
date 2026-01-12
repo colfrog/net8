@@ -187,6 +187,8 @@ void Server::receive_message(int socket, const std::string &message) {
         m_protocol.log_message(false, socket, trimmed);
         m_protocol.handle_message(socket, trimmed);
     } catch (const Net8Protocol::protocol_error &e) {
-        send_message(socket, "ERROR:" + std::string(e.what()));
+        send_message(socket, "PROTOERROR:" + std::string(e.what()));
+    } catch (const Game::game_error &e) {
+        send_message(socket, "GAMEERROR:" + std::string(e.what()));
     }
 }

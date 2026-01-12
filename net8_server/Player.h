@@ -24,6 +24,9 @@ public:
 
     bool operator==(const Player &player) const;
 
+    Hand &get_hand();
+    const Hand &get_hand() const;
+
 private:
     int m_socket;
     std::string m_name;

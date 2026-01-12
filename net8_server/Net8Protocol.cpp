@@ -44,6 +44,10 @@ void Net8Protocol::log_message(bool out, int socket, const std::string &message)
     std::cout << std::string(out ? "<--" : "-->") << std::string(player ? player->get_name() : "UNIDENTIFIED") << " (" << ip4 << ") - " << message << std::endl;
 }
 
+void Net8Protocol::announce_hand(Player *player) {
+    m_server->send_message(player->get_socket(), "HAND:" + player->get_hand().to_string());
+}
+
 void Net8Protocol::on_connect(int socket) {
     m_server->send_message(socket, "IDENT");
 }

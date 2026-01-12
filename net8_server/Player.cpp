@@ -39,3 +39,11 @@ int Player::get_socket() const {
 bool Player::operator==(const Player &player) const {
     return m_socket == player.m_socket;
 }
+
+Hand &Player::get_hand() {
+    return m_hand;
+}
+
+const Hand &Player::get_hand() const {
+    return m_hand;
+}

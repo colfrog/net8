@@ -6,6 +6,7 @@
 #define NET8_GAME_H
 
 #include <list>
+#include <stdexcept>
 
 #include "Deck.h"
 #include "Pile.h"
@@ -18,6 +19,7 @@ public:
     Game(Net8Protocol *protocol, std::string name);
 
     void reset();
+    void new_game();
 
     void add_player(Player *player);
     void remove_player(Player *player);
@@ -32,7 +34,14 @@ public:
 
     Deck &get_deck();
     Pile &get_pile();
+    int get_player_count() const;
     bool fits_rules(const Card *card);
+
+    void do_turn(Player *player, bool play, int card_index, const std::string &arg);
+
+    class game_error : public std::runtime_error {
+        using std::runtime_error::runtime_error;
+    };
 
 private:
     Net8Protocol *m_protocol;

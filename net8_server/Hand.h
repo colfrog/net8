@@ -15,11 +15,14 @@ class Hand {
 public:
     Hand() = default;
 
+    void draw_n(Game *game, int n);
     void draw(Game *game);
     bool play(Game *game, int card_index, const std::string &arg);
     void clear();
+    int count() const;
 
     const std::vector<Card *> &get_cards() const;
+    std::string to_string() const;
 
 private:
     std::vector<Card *> m_cards;

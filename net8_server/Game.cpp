@@ -3,12 +3,21 @@
 //
 
 #include "Game.h"
+#include "Net8Protocol.h"
 
 Game::Game(Net8Protocol *protocol, std::string name) : m_protocol(protocol), m_name(std::move(name)) {}
 
 void Game::reset() {
-    m_deck.set_n_players(0);
-    m_deck.rebuild(m_pile);
+    m_deck.reset();
+}
+
+void Game::new_game() {
+    m_deck.reset();
+    for (Player *player : m_players) {
+        player->get_hand().clear();
+        player->get_hand().draw_n(this, 8);
+        m_protocol->announce_hand(player);
+    }
 }
 
 void Game::add_player(Player *player) {
@@ -59,7 +68,30 @@ Pile &Game::get_pile() {
     return m_pile;
 }
 
+int Game::get_player_count() const {
+    return m_players.size();
+}
+
 bool Game::fits_rules(const Card *card) {
     const Card *top_card = m_pile.top_card();
     return card->custom_rules(this) || top_card->get_type() == card->get_type() || top_card->get_face() == card->get_face();
+}
+
+void Game::do_turn(Player *player, bool play, int card_index, const std::string &arg) {
+    if (player != m_players.front())
+        throw game_error("It's not your turn!");
+
+    Hand &hand = player->get_hand();
+    if (card_index < 0 || card_index >= hand.count())
+        throw Net8Protocol::protocol_error("Card index out of range");
+
+    if (play) {
+        hand.play(this, card_index, arg);
+        if (hand.count() == 0) {
+            m_protocol->send_to_room(player->get_socket(), "CHAT:" + player->get_name() + "won!");
+            m_protocol->send_to_room(player->get_socket(), "Starting new game...");
+            new_game();
+        }
+
+    }
 }

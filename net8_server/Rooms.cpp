@@ -38,6 +38,7 @@ void Rooms::transfer_player(Player *player, int game_id) {
     current_room->remove_player(player);
     m_rooms[game_id].add_player(player);
     player->set_game_id(game_id);
+    player->set_playing(false);
 }
 
 const std::list<Player *> &Rooms::get_players(int game_id) const {

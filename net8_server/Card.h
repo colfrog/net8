@@ -5,6 +5,7 @@
 #ifndef NET8_CARD_H
 #define NET8_CARD_H
 #include <string>
+#include <vector>
 
 class Game;
 
@@ -46,6 +47,7 @@ public:
 
     Face get_face() const;
     Type get_type() const;
+    std::string to_string() const;
 
     bool operator==(const Card &other) const;
     static bool face_sort_comparator(const Card *first, const Card *second);
@@ -53,7 +55,9 @@ public:
 
 protected:
     Face m_face;
+    std::vector<std::string> m_face_string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "JK"};
     Type m_type;
+    std::vector<std::string> m_type_string{"♥", "♦", "♠", "♣"};
 };
 
 
