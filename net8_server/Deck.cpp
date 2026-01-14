@@ -26,7 +26,7 @@ void Deck::build() {
     Pile &pile = m_game->get_pile();
     m_saved_card = pile.top_card();
     pile.clear();
-    clear(m_saved_card);
+    clear();
     if (m_saved_card != nullptr)
         pile.add(m_saved_card);
 
@@ -36,7 +36,7 @@ void Deck::build() {
         for (int i = 0; i < static_cast<int>(Card::Type::COUNT); i++) {
             for (int j = 0; j < static_cast<int>(Card::Face::COUNT) - 1; j++) {
                 if (j == 7) // 8
-                    card = reinterpret_cast<Card *>(new Card8(static_cast<Card::Type>(i), Card::Face::JOKER));
+                    card = reinterpret_cast<Card *>(new Card8(static_cast<Card::Type>(i), static_cast<Card::Face>(j)));
                 else
                     card = reinterpret_cast<Card *>(new Card(static_cast<Card::Type>(i), static_cast<Card::Face>(j)));
                 m_cards.push_back(card);
@@ -50,11 +50,13 @@ void Deck::build() {
     }
 
     shuffle();
+    if (m_saved_card == nullptr)
+        pile.add(draw());
 }
 
-void Deck::clear(Card *except) {
-    for (Card *card : m_cards)
-        if (card != except)
+void Deck::clear() {
+    for (const Card *card : m_cards)
+        if (card != m_saved_card)
             delete card;
 
     m_cards.clear();
@@ -74,10 +76,11 @@ void Deck::reset() {
 }
 
 Card *Deck::draw() {
-    Card *card = m_cards.back();
-    m_cards.pop_back();
-    if (m_cards.size() == 0) {
+    if (m_cards.empty()) {
         rebuild();
     }
+
+    Card *card = m_cards.back();
+    m_cards.pop_back();
     return card;
 }

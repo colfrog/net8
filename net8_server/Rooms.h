@@ -16,11 +16,18 @@ public:
     Rooms(Net8Protocol *protocol);
 
     int add_room(const std::string &name);
+    Game *get_room(int game_id);
+    const Game *get_room(int game_id) const;
+
+    void player_join(Player *player);
+    void player_part(Player *player);
 
     void add_player(Player *player);
     void remove_player(Player *player);
     void transfer_player(Player *player, int game_id);
-    const std::list<const Player *> get_players(int game_id) const;
+    std::list<const Player *> get_players(int game_id) const;
+
+    std::string to_string() const;
 
 private:
     Net8Protocol *m_protocol;

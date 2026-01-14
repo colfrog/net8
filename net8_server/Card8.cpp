@@ -3,6 +3,7 @@
 //
 
 #include "Card8.h"
+#include "Game.h"
 
 void Card8::effect(Game *game, const std::string &arg) {
     if (arg == "hearts")
@@ -13,6 +14,8 @@ void Card8::effect(Game *game, const std::string &arg) {
         m_type = Type::CLUB;
     else if (arg == "spades")
         m_type = Type::SPADE;
+    else
+        throw Game::game_error("Invalid argument to 8 card");
 }
 
 bool Card8::custom_rules(Game* game) const {

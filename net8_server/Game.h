@@ -42,7 +42,7 @@ public:
     int get_player_count() const;
     bool fits_rules(const Card *card);
 
-    void do_turn(Player *player, bool play, int card_index, const std::string &arg);
+    void do_turn(Player *player, bool play, int card_index = -1, const std::string &arg = "");
 
     class game_error : public std::runtime_error {
         using std::runtime_error::runtime_error;
@@ -51,7 +51,7 @@ public:
 private:
     Net8Protocol *m_protocol;
     std::string m_name;
-    Deck m_deck{0};
+    Deck m_deck{this};
     Pile m_pile;
     std::list<Player *> m_players;
     std::list<Player *> m_spectators;

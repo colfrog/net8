@@ -56,7 +56,12 @@ void Game::join_game(Player *player) {
         if (it != m_spectators.end()) {
             m_players.push_back(player);
             m_spectators.erase(it);
+            player->get_hand().draw_n(this, 8);
+            player->set_playing(true);
             m_protocol->announce_join(player);
+            m_protocol->announce_hand(player);
+            m_protocol->announce_turn(m_players.front(), player);
+            m_protocol->announce_top_card(this, player);
         }
     }
 }
@@ -65,9 +70,13 @@ void Game::part_game(Player *player) {
     if (player->is_playing()) {
         auto it = std::ranges::find(m_players.begin(), m_players.end(), player);
         if (it != m_players.end()) {
+            bool is_current = player == m_players.front();
             m_spectators.push_back(player);
             m_players.erase(it);
+            player->set_playing(false);
             m_protocol->announce_part(player);
+            if (is_current)
+                m_protocol->announce_turn(m_players.front());
         }
     }
 }
@@ -141,7 +150,7 @@ void Game::do_turn(Player *player, bool play, int card_index, const std::string 
         throw game_error("It's not your turn!");
 
     Hand &hand = player->get_hand();
-    if (card_index < 0 || card_index >= hand.count())
+    if (!play && (card_index < 0 || card_index >= hand.count()))
         throw Net8Protocol::protocol_error("Card index out of range");
 
     if (play) {

@@ -30,10 +30,11 @@ public:
     void announce_part(const Player *player) const;
     void announce_leave(const Player *player) const;
     void announce_spectator(const Player *player) const;
-    void announce_turn(const Player *player) const;
-    void announce_top_card(const Game *game) const;
+    void announce_turn(const Player *player, const Player *to = nullptr) const;
+    void announce_top_card(const Game *game, const Player *to = nullptr) const;
     void announce_inactive_room(const Game *game) const;
     void announce_new_room(const Game *game) const;
+    void announce_rooms(const Player *player) const;
 
     void on_connect(int socket);
     void on_disconnect(int socket);
@@ -45,12 +46,13 @@ private:
     void on_ident(int socket, const std::string &name);
     void on_chat(int socket, const std::string &message);
     void on_addroom(int socket, const std::string &message);
-    void on_leaveroom(int socket, const std::string &message);
     void on_switchroom(int socket, const std::string &message);
     void on_joingame(int socket, const std::string &message);
     void on_partgame(int socket, const std::string &message);
     void on_play(int socket, const std::string &message);
     void on_draw(int socket, const std::string &message);
+    void on_hand(int socket, const std::string &message);
+    void on_rooms(int socket, const std::string &message);
 
     Server *m_server;
     Playground m_playground;

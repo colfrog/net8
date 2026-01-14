@@ -27,6 +27,8 @@ bool Hand::play(Game *game, int card_index, const std::string &arg) {
         m_cards[card_index]->effect(game, arg);
         m_cards.erase(m_cards.begin() + card_index);
         return true;
+    } else {
+        throw Game::game_error("Card " + m_cards[card_index]->to_string() + " cannot be played on " + game->get_pile().top_card()->to_string());
     }
 
     return false;

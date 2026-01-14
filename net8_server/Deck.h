@@ -17,7 +17,7 @@ public:
     ~Deck();
 
     void build();
-    void clear(Card *except = nullptr);
+    void clear();
     void shuffle();
     void rebuild();
     void reset();
